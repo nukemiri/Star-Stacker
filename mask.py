@@ -18,19 +18,22 @@ def adjust_gamma(image, gamma=1.0):
 
 images = glob('Stars/img*.jpeg')
 
-print(images[5][-12::])
+print(images)
 image_list = [cv2.imread(i) for i in images]
 
 count = 0
 for image in image_list:
 	# image = adjust_gamma(image,2)
-	# image = cv2.resize(image,(1200,600))
+	# image = cv2.resize(image,(1200,600))[
+
+	# 入力画像の解像度が51の倍数になるように余白を設定
 	padx = 51 - (np.shape(image)[1]%51)
 	pady = 51 - (np.shape(image)[0]%51)
 
 	blue = image[:,:,0]
 	green = image[:,:,1]
 	red = image[:,:,2]
+	print(f"blue: {blue}\ngreen: {green}\nred: {red}\n")
 
 	red = np.pad(red, ((0,pady), (0,padx)), 'mean')
 	blue = np.pad(blue, ((0,pady), (0,padx)), 'mean')
@@ -59,7 +62,7 @@ for image in image_list:
 
 			for k in range(3):
 				y = inp[:,:,k].flatten()
-				beta = (np.linalg.inv(X.T @ W @ X)) @ (X.T @ W @ y)
+				beta = (np.linalg.pinv(X.T @ W @ X)) @ (X.T @ W @ y)
 				light_model[i:i+51,j:j+51,k] = np.reshape(X@beta,(np.shape(img)[0], np.shape(img)[1]))
 
 
